@@ -1,0 +1,95 @@
+{	
+	"function_id"		: "feat_extraction",
+	"run_flag"			: 0,
+	
+    "general"			: {
+		"directory"		: "/rensso/qnap/Anomalies/umn/temporal",
+		"frame_w"		: 640,
+		"frame_h"		: 480
+	},
+	
+	"train" 	: {
+		"file_list"		: "/rensso/qnap/Anomalies/umn/centers.lst",
+		"retrain_flag"	: 1,
+		"test_size" 	: 0.005,
+		"epochs"		: 100,
+		"feature"		: {
+			"stride" 	: 4,
+			"blk_size"	: 8
+		},
+		"net"	: {
+			"names"			: ["Auto_Recu"]		
+		}
+	},
+	
+	"feat_extraction"	: {
+		"file_list"		: "/rensso/qnap/Anomalies/umn/centers.lst",
+		"models_file"	: ["Auto_Recu_15"],
+		"out_token"		: "train"
+	},
+	
+    "clustering": {
+		"args"	: {
+			"n_clusters"	: 10
+				},			
+		"methods"	: ["Affinity"],
+		"models"	: ["Auto_Recu_7", "Auto_Recu_4", "Auto_Recu_15"],
+		"labels"    : "/rensso/qnap/research/suported/trks/centers_linux.lst"
+	},
+	
+	"visualize" : {
+		"sub_dir"	: "SOM",
+		"width"		: 1280,
+		"height"	: 720,
+		"img_size"	: 128,
+		"nsamples"	: 50,
+		"max"		: 230,
+		"reverse"	: 0,
+		"savefig"	: 1
+	},
+	
+
+	"knn"		: {
+		"train_feat_list" 	: "/rensso/qnap/Anomalies/subway/exit/temporal/features/Auto_Recu_15_train.ft",
+		"test_feat_list" 	: "/rensso/qnap/Anomalies/subway/exit/temporal/features/Auto_Recu_15_test.ft",
+		"threshold"			: 100,
+		"label_list"		: "/rensso/qnap/Anomalies/subway/exit/test_centers.lst"
+		
+	}	,
+	
+	"validation": {
+		"gt_file"	: "/rensso/qnap/Anomalies/subway/entrance/gt/matheus.gt",
+		"range_frm" : 200,
+		"ini_th"	: 0,
+		"fin_th"	: 2,
+		"step"		: 0.01,
+		"final_frame"		: 64400,
+		"train_feat_list" 	: "/rensso/qnap/Anomalies/subway/entrance/test1/temporal/features/Auto_Recu_15_train.ft",
+		"test_feat_list" 	: "/rensso/qnap/Anomalies/subway/entrance/test1/temporal/features/Auto_Recu_15_test.ft",
+		"label_list"		: "/rensso/qnap/Anomalies/subway/entrance/test1/test_trk.lst",
+		"out_dir"			: "/rensso/qnap/Anomalies/subway/entrance/test1/temporal/outputs"
+	},
+	"plot_roc":{
+		
+		"files"		: 	[	
+							"/rensso/qnap/Anomalies/subway/entrance/temporal/outputs/fpr_tpr.txt",
+							"/rensso/qnap/Anomalies/subway/entrance/multi/outputs/fpr_tpr.txt",
+							"E:/Dropbox/tcsvt2015/csvt/figs/tests/Subway-Entrance-Entropia.txt",
+							"E:/Dropbox/tcsvt2015/csvt/figs/tests/Subway-Entrance-Hofm-R.txt",
+							"E:/Dropbox/tcsvt2015/csvt/figs/tests/Subway-Entrance-Original.txt"
+						],
+		"labels"	: 	[	"TAoT", "Net", "HOFME", "HOFM", "Original" ]
+						
+	},
+	"joinFeats":{
+		"group1"	: 	[	"/rensso/qnap/Anomalies/subway/entrance/multi/train_angular.ft",
+							"/rensso/qnap/Anomalies/subway/entrance/multi/test_angular.ft"
+						],
+		"group2"	: 	[	"/rensso/qnap/Anomalies/subway/entrance/multi/train_radial.ft",
+							"/rensso/qnap/Anomalies/subway/entrance/multi/test_radial.ft"
+						],
+		"out_token"	: 	[	"train_join", "test_join" ],
+		"out_dir"	: 	"/rensso/qnap/Anomalies/subway/entrance/multi"
+	}
+	
+}
