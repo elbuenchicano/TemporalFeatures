@@ -3,19 +3,19 @@
 	"run_flag"			: 0,
 	
     "general"			: {
-		"directory"		: "y:/Anomalies/umn/temporal",
-		"frame_w"		: 640,
-		"frame_h"		: 480
+		"directory"		: "y:/Anomalies/umn/seq1/temporal",
+		"frame_w"		: 320,
+		"frame_h"		: 240
 	},
 	
 	"train" 	: {
-		"file_list"		: "y:/Anomalies/subway/entrance/train_centers.lst",
+		"file_list"		: "y:/Anomalies/umn/seq1/centers.lst",
 		"retrain_flag"	: 1,
 		"test_size" 	: 0.05,
-		"epochs"		: 700,
+		"epochs"		: 100,
 		"feature"		: {
-			"stride" 	: 8,
-			"blk_size"	: 16
+			"stride" 	: 4,
+			"blk_size"	: 8
 		},
 		"net"	: {
 			"names"			: ["Auto_Recu"]		
@@ -23,7 +23,7 @@
 	},
 	
 	"feat_extraction"	: {
-		"file_list"		: "y:/research/suported/trks/recurrent/test_net.lst",
+		"file_list"		: "y:/Anomalies/umn/seq1/centers.lst",
 		"models_file"	: ["Auto_Recu_15"],
 		"out_token"		: "test"
 	},
@@ -34,14 +34,14 @@
 				},			
 		"methods"	: ["GMM", "KMeans", "Affinity", "Spectral", "DBScan", "SOM", "Birch"],
 		"models"	: ["Auto_Recu_15"],
-		"labels"    : "y:/Anomalies/umn/filelist_trk.lst",
+		"labels"    : "y:/Anomalies/umn/seq1/filelist_trk.lst",
 		"token"		: "test"
 	},
 	
 	"visualize" : {
 		"sub_dir"	: "Affinity",
-		"height"	: 480, 
-		"width"		: 640,
+		"height"	: 240, 
+		"width"		: 320,
 		"img_size"	: 128,
 		"nsamples"	: 50,
 		"max"		: 230,

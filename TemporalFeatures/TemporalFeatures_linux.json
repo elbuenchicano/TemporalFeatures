@@ -1,5 +1,5 @@
 {	
-	"function_id"		: "feat_extraction",
+	"function_id"		: "train",
 	"run_flag"			: 0,
 	
     "general"			: {
@@ -9,7 +9,7 @@
 	},
 	
 	"train" 	: {
-		"file_list"		: "/rensso/qnap/Anomalies/umn/centers.lst",
+		"file_list"		: "/rensso/qnap/Anomalies/umn/seq1/centers.lst",
 		"retrain_flag"	: 1,
 		"test_size" 	: 0.005,
 		"epochs"		: 100,
