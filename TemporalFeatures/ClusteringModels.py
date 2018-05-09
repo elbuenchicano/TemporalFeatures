@@ -1,4 +1,5 @@
 import numpy as np
+
 import os
 import json
 import shutil
@@ -7,6 +8,11 @@ from sklearn.cluster    import KMeans, AffinityPropagation, MeanShift, estimate_
 from utils              import *
 from sklearn.mixture    import GaussianMixture
 from minisom            import MiniSom
+
+from sklearn.neighbors.kde import KernelDensity
+from scipy.stats        import norm
+from sklearn.externals  import joblib
+
 
 #import matplotlib.pyplot as plt
 
@@ -245,10 +251,143 @@ def filterTrks(lst1, lst2):
     out     = 'y:/gt/listfiltered.txt'
     u_saveList2File(out, fixed)
 
+################################################################################
+################################################################################
+################################################################################
+################################################################################
+################################################################################
+class KDECluster:
+    '''
+    points is a vector of vectors [[],[]]
+    '''
+    def __init__(self, points, bw, labels):
+        if len(points) < 5: 
+            self.kde_   = KernelDensity(kernel='gaussian', bandwidth=bw)
+        else:
+            self.kde_   = KernelDensity(kernel='epanechnikov', algorithm='ball_tree', bandwidth=bw, leaf_size = 50)
+        
+        self.points_    = points
+        self.labels_    = labels
+
+        self.kde_.fit(points)
+
+    #..........................................................................
+    def compare(self, cluster):
+        scores_self = np.exp(self.kde_.score_samples(cluster.points_))
+        scores_clus = np.exp(cluster.kde_.score_samples(self.points_))
+
+        m_self      = max(scores_self)
+        m_clus      = max(scores_clus)
+
+        return max(m_clus, m_self)
+            
+
+################################################################################
+################################################################################
+def cgrow(x, base):
+    ''' Matlab code sample 
+    m   = 1;
+    x   = 0:0.01:m;
+    %ld  = 0.1448; 
+    ld  = 0.0869; 
+    c   = 0.7; %1.5
+    d   = 0.5;
+    y   = exp(-d*x/ld) - (x.^2-x) / c;
+    %y   = exp(-ld)*(ld.^x) ./ factorial(x);
+    %y = (2 ./ (1 + exp(-2.*x)) ) - 1 + (1-0.7616);
+    th = 0.3;
+    y  = (1-th) * (1-y) + th    
+    '''
+    ld  = 0.0869 # must be fixed values extracted from log(1e-5)
+    c   = 0.7 # cumulative factor
+    d   = 0.5 # linear factor
+    y   = np.exp(-d*x/ld) - (x**2-x) / c
+    y   = (1 - base) * (1 - y) + base
+    return y
+
+################################################################################
+################################################################################
+class KDEC:
+    def __init__(self, max_iter, prob_th, bw):
+        self.max_iter_  = max_iter
+        self.prob_th_   = prob_th
+        self.bw_        = bw
+
+    def fit(self, samples):
+        #  initializer whole clusters ..............................................
+        clusters = []
+        for i in range(len(samples)):
+            clusters.append(KDECluster(samples[i], self.bw_, [i]))
+             
+        iter    = 0
+        c_flag  = False
+               
+        # until max iter or convergence condition is satisfied .....................
+        while iter < self.max_iter_ and c_flag != True:
+            
+            i   = iter / self.max_iter_
+            th  = cgrow(i, self.prob_th_)
+
+            c_flag  = True
+             
+            n_clusters      = len(clusters)
+            group_flag      = np.zeros(n_clusters)
+
+            clusters_temp   = []
+
+            for i in range(n_clusters):
+                #u_progress(i, n_clusters)
+                if group_flag[i] == 0:
+                    group_flag[i]    = 1
+                    for j in range(n_clusters):
+                        if i != j and group_flag[j] == 0:
+                            score = clusters[i].compare(clusters[j]) 
+                            #print(score)
+                            if score > th:
+                                clusters[i].points_ = np.concatenate( (clusters[i].points_, clusters[j].points_ ))
+                                clusters[i].labels_ = clusters[i].labels_ + clusters[j].labels_
+                                group_flag[j]       = 1
+                                c_flag              = False
+
+                    if c_flag == False:
+                        clusters[i].kde_.fit(clusters[i].points_)
+
+                    clusters_temp.append(clusters[i])
+                
+            clusters = clusters_temp
+            iter    += 1
+
+        self.clusters_ = clusters
+
+        #define labels
+        self.labels_ = np.zeros(len(samples))
+        for i in range(len( clusters) ):
+            for l in clusters[i].labels_:
+                self.labels_[l] = i
+
+################################################################################
+################################################################################
+def clusteringKde(feats, labels, args, directory):
+    print('KDE clustering................................................')
+    max_iter    = args['max_iter']
+    prob_th     = args['prob_th']
+    bw          = args['bandwidth']
+
+    #...........................................................................
+    kdec = KDEC(max_iter, prob_th, bw)
+    samples = feats[:, np.newaxis]
+    kdec.fit(samples)
     
+    clusters    = [[] for i in range(len(kdec.clusters_))]
 
+    # fitting kmeans
+    for i in range( len( kdec.labels_ ) ):
+        label = kdec.labels_[i]
+        clusters[int(label)].append(labels[i])
 
-
+    # saving clusters
+    out_dir = directory + '/KDE' 
+    savingData(out_dir, clusters, [[]])
 
 #-------------------------------------------------------------------------------
 ################################################################################

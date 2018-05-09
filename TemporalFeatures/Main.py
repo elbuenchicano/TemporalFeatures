@@ -27,7 +27,8 @@ if __name__ == '__main__':
                         "knn"               : knn,
                         "validation"        : validatation,
                         "plot_roc"          : plotRoc,
-                        "joinFeats"         : joinFeatures
+                        "joinFeats"         : joinFeatures,
+                        "tsne"              : tsne
                      } 
     control =  Controler(main_functions, 'TemporalFeatures.json')
     control.run()

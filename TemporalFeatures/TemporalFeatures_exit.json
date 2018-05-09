@@ -1,5 +1,5 @@
 {	
-	"function_id"		: "plot_roc",
+	"function_id"		: "clustering",
 	"run_flag"			: 0,
 	
     "general"			: {
@@ -30,9 +30,12 @@
 	
     "clustering": {
 		"args"	: {
-			"n_clusters"	: 16
+			"n_clusters"	: 16,
+			"max_iter"		: 100,
+			"prob_th"		: 0.1,
+			"bandwidth"		: 0.4
 				},			
-		"methods"	: ["GMM", "KMeans", "Affinity", "Spectral", "DBScan", "SOM", "Birch"],
+		"methods"	: ["GMM", "KMeans", "Affinity", "Spectral", "DBScan", "SOM", "Birch", "KDE"],
 		"models"	: ["Auto_Recu_15"],
 		"labels"    : "y:/Anomalies/subway/exit/test_trk.lst",
 		"token"		: "test"

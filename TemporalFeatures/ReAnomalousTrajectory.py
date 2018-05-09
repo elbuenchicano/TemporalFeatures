@@ -10,6 +10,7 @@ from MyNets     import MyNet
 from sklearn.model_selection    import train_test_split
 from keras.models               import load_model, Model
 from ClusteringModels           import *
+from tsne  import tsneExample
 
 if os.name == 'nt':
     from utils_image import *
@@ -247,7 +248,8 @@ def clustering(file, data_info):
                 "Spectral"  : clusteringSpectral,
                 "DBScan"    : clusteringDBScan,
                 "SOM"       : clusteringSOM,
-                "Birch"     : clusteringBirch
+                "Birch"     : clusteringBirch,
+                "KDE"       : clusteringKde
               } 
     for model in models:
         sub_folder  = folder + '/' + model
@@ -562,7 +564,25 @@ def joinFeatures(file, data):
         np.savetxt(name, join_mat)
 
 
+################################################################################
+################################################################################
+def tsne(file, data):
+    samples_files   = data['samples_files']
 
+    #...........................................................................
+    samples = []
+    cont    = 0
+    labels  = []
+    for samples_file in samples_files:
+        sample = np.loadtxt(samples_file)
+        samples.append( sample )
+        label  = np.ones( len(sample) ) * cont
+        labels = np.concatenate((labels, label)) 
+        cont  += 1
+    
+    samples = np.concatenate(samples)
+
+    tsneExample(samples, labels.astype(int))
 
 
 
