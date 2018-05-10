@@ -122,7 +122,7 @@ def tsne(X=np.array([]), no_dims=2, initial_dims=50, perplexity=30.0):
         return -1
 
     # Initialize variables
-    X = pca(X, initial_dims).real
+    #X = pca(X, initial_dims).real
     (n, d) = X.shape
     max_iter = 1000
     initial_momentum = 0.5

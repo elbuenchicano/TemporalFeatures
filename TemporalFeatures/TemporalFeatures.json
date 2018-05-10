@@ -1,15 +1,15 @@
 {	
-	"function_id"		: "tsne",
+	"function_id"		: "plot_roc",
 	"run_flag"			: 0,
 	
     "general"			: {
-		"directory"		: "y:/Anomalies/umn/seq2/temporal",
+		"directory"		: "y:/Anomalies/subway/entrance/test1/temporal",
 		"frame_w"		: 320,
 		"frame_h"		: 240
 	},
 	
 	"train" 	: {
-		"file_list"		: "y:/Anomalies/umn/seq2/centers.lst",
+		"file_list"		: "y:/Anomalies/umn/seq2/crowd_620_1294_train_2_centers.lst",
 		"retrain_flag"	: 1,
 		"test_size" 	: 0.05,
 		"epochs"		: 100,
@@ -25,7 +25,7 @@
 	"feat_extraction"	: {
 		"file_list"		: "y:/Anomalies/umn/seq2/crowd_1294_1431_test_2_centers.lst",
 		"models_file"	: ["Auto_Recu_15"],
-		"out_token"		: "test_only"
+		"out_token"		: "test"
 	},
 	
     "clustering": {
@@ -53,10 +53,10 @@
 	},
 	
 	"knn"		: {
-		"train_feat_list" 	: "Y:/Anomalies/subway/entrance/multi/train_join.ft",
-		"test_feat_list" 	: "Y:/Anomalies/subway/entrance/multi/test_join.ft",
+		"train_feat_list" 	: "Y:/Anomalies/umn/seq2/temporal2/features/Auto_Recu_15_train.ft",
+		"test_feat_list" 	: "Y:/Anomalies/umn/seq2/temporal2/features/Auto_Recu_15_test.ft",
 		"threshold"			: 0.3,
-		"label_list"		: "y:/Anomalies/subway/entrance/test_trk.lst"
+		"label_list"		: "y:/Anomalies/umn/seq2/filelist_trk_crowd_1294_1431_test_2.lst"
 		
 	},
 	
@@ -67,22 +67,20 @@
 		"fin_th"	: 2,
 		"step"		: 0.01,
 		"final_frame"		: 144000,
-		"train_feat_list" 	: "y:/Anomalies/subway/entrance/test12/temporal/features/Auto_Recu_15_train.ft",
-		"test_feat_list" 	: "y:/Anomalies/subway/entrance/test12/temporal/features/Auto_Recu_15_test.ft",
-		"label_list"		: "y:/Anomalies/subway/entrance/test12/test_trk.lst",
-		"out_dir"			: "Y:/Anomalies/subway/entrance/test12/temporal/outputs"
+		"train_feat_list" 	: "y:/Anomalies/subway/entrance/test1/temporal/features/Auto_Recu_15_train.ft",
+		"test_feat_list" 	: "y:/Anomalies/subway/entrance/test1/temporal/features/Auto_Recu_15_test.ft",
+		"label_list"		: "y:/Anomalies/subway/entrance/test1/test_trk.lst"
 	},
+	
 	"plot_roc":{
 		
 		"files"		: 	[	
-							"y:/Anomalies/subway/entrance/test11/temporal/outputs/metrics.txt",
-							"E:/Dropbox/tcsvt2015/csvt/figs/tests/Subway-entrance-Entropia.txt",
-							"E:/Dropbox/tcsvt2015/csvt/figs/tests/Subway-entrance-Hofm-r.txt",
-							"E:/Dropbox/tcsvt2015/csvt/figs/tests/Subway-entrance-Hofm.txt",
-							"E:/Dropbox/tcsvt2015/csvt/figs/tests/Subway-entrance-Original.txt",
-							"Y:/Anomalies/subway/entrance/out/entr_CRF-multiple.roc"
+							"y:/Anomalies/subway/entrance/test5/temporal/outputs/metrics.txt",
+							"E:/Dropbox/tcsvt2015/csvt/figs/tests/Subway-Entrance-Entropia.txt",
+							"E:/Dropbox/tcsvt2015/csvt/figs/tests/Subway-Entrance-Hofm-R.txt",
+							"E:/Dropbox/tcsvt2015/csvt/figs/tests/Subway-Entrance-Original.txt"
 						],
-		"labels"	: 	[	"TAoT", "HOFME", "HOFM-R", "HOFM-M", "Original", "CRF"]
+		"labels"	: 	[	"TAoT", "HOFME", "HOFM", "Original" ]
 						
 	},
 	"joinFeats":{
@@ -97,8 +95,8 @@
 	},
 	
 	"tsne": {
-		"samples_files"	: [ "Y:/Anomalies/umn/seq2/temporal/features/Auto_Recu_15_test_only.ft",
-							"Y:/Anomalies/umn/seq2/temporal/features/Auto_Recu_15_train_only.ft"]
+		"samples_files"	: [ "Y:/Anomalies/umn/seq2/temporal2/features/Auto_Recu_15_train.ft",
+							"Y:/Anomalies/umn/seq2/temporal2/features/Auto_Recu_15_test.ft"]
 	}
 	
 }

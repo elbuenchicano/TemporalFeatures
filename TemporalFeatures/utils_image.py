@@ -121,7 +121,7 @@ def plotRocCurve(obs, labels):
     for fpr, tpr in obs: 
         roc_auc = np.trapz(x = fpr, y = tpr) *-1
         err     = ui_getERR(fpr, tpr)
-        plt.plot(fpr, tpr, famous_colors[pos], label = labels[pos] + '=%0.3f|' % roc_auc + 'ERR=%0.2f' % err ) 
+        plt.plot(fpr, tpr, marker='.', color = famous_colors[pos], label = labels[pos] + '=%0.3f|' % roc_auc + 'ERR=%0.2f' % err ) 
         pos += 1
 
     plt.title('Receiver Operating Characteristic')

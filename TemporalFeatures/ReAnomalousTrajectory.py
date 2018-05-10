@@ -379,7 +379,7 @@ def knnAtomic(train_ft, test_ft, labels, thr, test_file, out_dir):
     
         x   = open(anomalies[i], 'r')
         x   = x.readline()
-        frm = int(x.split(',')[0]) / 5
+        frm = int(x.split(',')[0])
         
         frames_tup.append((frm, anomalies[i]))
         frames.append(frm)
@@ -464,8 +464,8 @@ def validationInVector(anomalies, gt):
         if anomalies[i] == 0 and gt[i] > 0:
             fn +=1
 
-    tpr = tp / (tp + fn)
-    fpr = fp / (fp + tn)
+    tpr = tp / (tp + fn + 1e-10)
+    fpr = fp / (fp + tn + 1e-10)
     pre = tp / (tp + fp + 1e-10)
 
     return fpr, tpr, pre

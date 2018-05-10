@@ -1,5 +1,5 @@
 {	
-	"function_id"		: "train",
+	"function_id"		: "plot_roc",
 	"run_flag"			: 0,
 	
     "general"			: {
