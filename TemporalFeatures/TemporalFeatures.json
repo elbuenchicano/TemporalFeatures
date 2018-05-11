@@ -65,7 +65,8 @@
 		"range_frm" : 200,
 		"ini_th"	: 0,
 		"fin_th"	: 2,
-		"step"		: 0.01,
+		"step"		: 0.1,
+		"initial_frame"		: 30000,
 		"final_frame"		: 144000,
 		"train_feat_list" 	: "y:/Anomalies/subway/entrance/test1/temporal/features/Auto_Recu_15_train.ft",
 		"test_feat_list" 	: "y:/Anomalies/subway/entrance/test1/temporal/features/Auto_Recu_15_test.ft",
@@ -75,7 +76,7 @@
 	"plot_roc":{
 		
 		"files"		: 	[	
-							"y:/Anomalies/subway/entrance/test5/temporal/outputs/metrics.txt",
+							"y:/Anomalies/subway/entrance/test1/temporal/outputs/metrics.txt",
 							"E:/Dropbox/tcsvt2015/csvt/figs/tests/Subway-Entrance-Entropia.txt",
 							"E:/Dropbox/tcsvt2015/csvt/figs/tests/Subway-Entrance-Hofm-R.txt",
 							"E:/Dropbox/tcsvt2015/csvt/figs/tests/Subway-Entrance-Original.txt"

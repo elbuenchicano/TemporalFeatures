@@ -448,13 +448,13 @@ def makeAnomalyVector(anomalies, fin):
 
 ################################################################################
 ################################################################################
-def validationInVector(anomalies, gt):
+def validationInVector(anomalies, gt, ini=0):
     size        = len(anomalies)
     #obs         = np.zeros(size)
     tp, fp      = 0, 0
     tn, fn      = 0, 0
 
-    for i in range( size ):
+    for i in range(ini, size ):
         if anomalies[i] == 1 and gt[i] > 0:
             tp +=1 
         if anomalies[i] == 0 and gt[i] == 0:
@@ -483,6 +483,7 @@ def validatation(file, data):
     fin         = data['fin_th']
     step        = data['step']
     final_frame = data['final_frame']
+    ini_frame   = data['initial_frame']
     gt_file     = data['gt_file']
     range_frm   = data['range_frm']
 
@@ -508,7 +509,7 @@ def validatation(file, data):
         
         a_vec, a_mat        = makeAnomalyVector(ans, final_frame)
 
-        fpr_s, tpr_s, pre_s = validationInVector(a_vec, gt)
+        fpr_s, tpr_s, pre_s = validationInVector(a_vec, gt, ini_frame)
         fpr.append(fpr_s)
         tpr.append(tpr_s)
         pre.append(pre_s)
