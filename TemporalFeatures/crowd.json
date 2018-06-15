@@ -3,7 +3,7 @@
 	"run_flag"			: 0,
 	
     "general"			: {
-		"directory"		: "y:/Anomalies/train/test2/temporal",
+		"directory"		: "y:/Anomalies/umn/temporal3/s3",
 		"frame_w"		: 320,
 		"frame_h"		: 240
 	},
@@ -23,26 +23,28 @@
 	},
 	
 	"feat_extraction"	: {
-		"file_list"		: "y:/Anomalies/umn/seq2/crowd_1294_1431_test_2_centers.lst",
+		"file_list"		: [	"y:/Anomalies/umn/trks/lists/crowd_0_496_train_1_centers.lst",
+							"y:/Anomalies/umn/trks/lists/crowd_496_620_test_1_centers.lst"
+							],
 		"models_file"	: ["Auto_Recu_15"],
-		"out_token"		: "test"
+		"out_token"		: "complete"
 	},
 	
     "clustering": {
 		"args"	: {
-			"n_clusters"	: 2,
+			"n_clusters"	: 6,
 			"max_iter"		: 100,
 			"prob_th"		: 0.01,
 			"bandwidth"		: 0.3
 				},			
-		"methods"	: ["GMM", "KMeans", "Affinity", "KDE"],
+		"methods"	: ["Affinity"],
 		"models"	: ["Auto_Recu_15"],
-		"labels"    : "y:/Anomalies/umn/seq2/filelist_trk.lst",
-		"token"		: "test"
+		"labels"    : "y:/Anomalies/umn/trks/s4_trk.lst",
+		"token"		: "complete"
 	},
 	
 	"visualize" : {
-		"sub_dir"	: "GMM",
+		"sub_dir"	: "Affinity",
 		"height"	: 240, 
 		"width"		: 320,
 		"img_size"	: 128,
@@ -53,7 +55,7 @@
 	},
 	
 	"knn"		: {
-		"train_feat_list" 	: "Y:/Anomalies/umn/seq2/temporal2/features/Auto_Recu_15_train.ft",
+		"train_feat_list" 	: "Y:/Anomalies/umn/seq2/temporal2/features/Auto_Recu_15_train.ft",z
 		"test_feat_list" 	: "Y:/Anomalies/umn/seq2/temporal2/features/Auto_Recu_15_test.ft",
 		"threshold"			: 0.3,
 		"label_list"		: "y:/Anomalies/umn/seq2/filelist_trk_crowd_1294_1431_test_2.lst"
@@ -61,26 +63,25 @@
 	},
 	
 	"validation": {
-		"gt_file"	: "y:/Anomalies/train/gt/train.gt",
-		"range_frm" : 50,
-		"ini_th"	: 0,
-		"fin_th"	: 1,
-		"step"		: 0.01,
-		"initial_frame"		: 840,
-		"final_frame"		: 18000,
-		"train_feat_list" 	: "y:/Anomalies/train/test2/temporal/features/Auto_Recu_15_train.ft",
-		"test_feat_list" 	: "y:/Anomalies/train/test2/temporal/features/Auto_Recu_15_test.ft",
-		"label_list"		: "y:/Anomalies/train/test2/test_trk.lst"
+		"gt_file"	: "y:/Anomalies/umn/gt/gts/s3.gt",
+		"range_frm" : 20,
+		"ini_th"	: 0, 
+		"fin_th"	: 10,
+		"step"		: 0.05,
+		"initial_frame"		: 0,
+		"final_frame"		: 240,
+		"train_feat_list" 	: "y:/Anomalies/umn/temporal3/s3/features/Auto_Recu_15_train.ft",
+		"test_feat_list" 	: "y:/Anomalies/umn/temporal3/s3/features/Auto_Recu_15_test.ft",
+		"label_list"		: "y:/Anomalies/umn/trks_x2/filelist_trk_crowd_1760_2000_2.lst"
 	},
 	
 	"plot_roc":{
 		
 		"files"		: 	[	
-							"y:/Anomalies/train/test2/temporal/outputs/metrics.txt",
-							"y:/Anomalies/train/gt/method1.roc"
+							"y:/Anomalies/umn/temporal3/s3/outputs/metrics.txt"
 				
 						],
-		"labels"	: 	[	"TAoT", "Bayes", "HOFM", "Original" ]
+		"labels"	: 	[	"TAoT", "HOFME", "HOFM", "Original" ]
 						
 	},
 	"joinFeats":{
@@ -95,8 +96,14 @@
 	},
 	
 	"tsne": {
-		"samples_files"	: [ "y:/Anomalies/train/test2/temporal/features/Auto_Recu_15_train.ft",
-							"y:/Anomalies/train/test2/temporal/features/Auto_Recu_15_test.ft"]
+		"samples_files"	: [ "y:/Anomalies/umn/multi/s1/features/Auto_Recu_15_complete.ft"							
+							],
+		"high_flag"		: 1,
+		"labels"    	: "y:/Anomalies/umn/trks/s1_trk.lst",
+		"highlight"		: [ 
+							"Y:/Anomalies/umn/multi/s1/clusters/Auto_Recu_15/Affinity/Affinity/Affinity_cluster_002_1.lst"
+							]
+							
 	}
 	
 }

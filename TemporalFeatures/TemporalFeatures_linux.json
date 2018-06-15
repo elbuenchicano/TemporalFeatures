@@ -1,15 +1,15 @@
 {	
-	"function_id"		: "plot_roc",
+	"function_id"		: "feat_extraction",
 	"run_flag"			: 0,
 	
     "general"			: {
-		"directory"		: "/rensso/qnap/Anomalies/umn/temporal",
-		"frame_w"		: 640,
-		"frame_h"		: 480
+		"directory"		: "/rensso/qnap/Anomalies/lab/temporal2",
+		"frame_w"		: 1280,
+		"frame_h"		: 720
 	},
 	
 	"train" 	: {
-		"file_list"		: "/rensso/qnap/Anomalies/umn/seq1/centers.lst",
+		"file_list"		: "/rensso/qnap/Anomalies/lab/lists/normal_d_5_04_centers.lst",
 		"retrain_flag"	: 1,
 		"test_size" 	: 0.005,
 		"epochs"		: 100,
@@ -23,7 +23,9 @@
 	},
 	
 	"feat_extraction"	: {
-		"file_list"		: "/rensso/qnap/Anomalies/umn/centers.lst",
+		"file_list"		: [
+							"/rensso/qnap/Anomalies/lab/lists/normal_d_5_04_centers.lst"
+							],
 		"models_file"	: ["Auto_Recu_15"],
 		"out_token"		: "train"
 	},

@@ -26,9 +26,11 @@ if __name__ == '__main__':
                         'visualize'         : visualizeClusters,
                         "knn"               : knn,
                         "validation"        : validatation,
+                        "validation2"       : validation2,
                         "plot_roc"          : plotRoc,
                         "joinFeats"         : joinFeatures,
-                        "tsne"              : tsne
+                        "tsne"              : tsne,
+                        'join_metrics'      : joinMetrics
                      } 
     control =  Controler(main_functions, 'TemporalFeatures.json')
     control.run()

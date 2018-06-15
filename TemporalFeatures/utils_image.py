@@ -5,6 +5,9 @@ import matplotlib.pyplot as plt
 
 from scipy.optimize import brentq
 from scipy.interpolate import interp1d
+
+from sklearn.metrics import roc_curve
+
 from matplotlib.backends.backend_pdf import PdfPages
 from PIL import Image
 
@@ -117,6 +120,7 @@ def plotRocCurve(obs, labels):
     famous_colors = ['r', 'g', 'b', 'black','brown', 'slateblue', 'salmon', 'gold', 'gray', 'orange', 'violet' , 'darkgreen']
 
     pos = 0
+   
     
     for fpr, tpr in obs: 
         roc_auc = np.trapz(x = fpr, y = tpr) *-1
@@ -128,6 +132,8 @@ def plotRocCurve(obs, labels):
     plt.legend(loc = 'lower right')
 
     plt.plot([0, 1], [0, 1],'darkgray', linestyle='--')
+    plt.plot([0, 1], [1, 0],'darkgray', linestyle='--')
+
     plt.xlim([0, 1])
     plt.ylim([0, 1])
     plt.ylabel('True Positive Rate')

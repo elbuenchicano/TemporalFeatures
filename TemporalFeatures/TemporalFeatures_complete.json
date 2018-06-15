@@ -1,11 +1,11 @@
 {	
-	"function_id"		: "validation",
+	"function_id"		: "clustering",
 	"run_flag"			: 0,
 	
     "general"			: {
-		"directory"		: "y:/Anomalies/subway/entrance/temporal",
-		"frame_w"		: 512,
-		"frame_h"		: 384
+		"directory"		: "y:/research/suported/trks/recurrent",
+		"frame_w"		: 1280,
+		"frame_h"		: 720
 	},
 	
 	"train" 	: {
@@ -29,15 +29,19 @@
 	
     "clustering": {
 		"args"	: {
-			"n_clusters"	: 16
+			"n_clusters"	: 16,
+			"max_iter"		: 100,
+			"prob_th"		: 0.2,
+			"bandwidth"		: 0.5
 				},			
-		"methods"	: ["GMM", "KMeans", "Affinity", "Spectral", "DBScan", "SOM", "Birch"],
-		"models"	: ["Auto_Recu_7", "Auto_Recu_4", "Auto_Recu_15"],
-		"labels"    : "y:/research/suported/trks/recurrent/test_net.lst"
+		"methods"	: ["KDE"],
+		"models"	: ["Auto_Recu_15"],
+		"labels"    : "y:/research/suported/trks/filelist_trk.lst",
+		"token"		: ""
 	},
 	
 	"visualize" : {
-		"sub_dir"	: "GMM",
+		"sub_dir"	: "KDE",
 		"width"		: 1280,
 		"height"	: 720,
 		"img_size"	: 128,

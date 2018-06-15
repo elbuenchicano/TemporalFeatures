@@ -10,10 +10,10 @@ from MyNets     import MyNet
 from sklearn.model_selection    import train_test_split
 from keras.models               import load_model, Model
 from ClusteringModels           import *
-from tsne  import tsneExample
 
 if os.name == 'nt':
     from utils_image import *
+    from tsne  import tsneExample, pca
 
 
 ################################################################################
@@ -26,6 +26,9 @@ def loadCenters(centers_file, w ,h):
         #print(file)
         if os.name == 'posix':
             file = file.replace( 'y:', '/rensso/qnap')
+            file = file.replace( 'Y:', '/rensso/qnap')
+            file = file.replace( '\\', '/')
+        
         u_progress(cont, final)
         centers = [[],[]]
         for line in open(file.strip(), 'r'):
@@ -65,10 +68,14 @@ def loadCentersVector(file_dir, directory, test_size, frm_w, frm_h):
 ################################################################################
 def loadCentersVectorSingle2(file_lst, frm_w, frm_h):
     
-    file_list       = u_loadFileManager(file_lst)
-    lst, shape      = loadCenters(file_list, frm_w, frm_h)
+    lst_f = []
+    for file in file_lst:
+        file_list       = u_loadFileManager(file)
+        lst, shape      = loadCenters(file_list, frm_w, frm_h)
+        lst_f.append(lst)
 
-    return lst, shape
+    lst_f = np.concatenate( lst_f )
+    return lst_f, shape
 
 ################################################################################
 ################################################################################
@@ -215,8 +222,7 @@ def featExtraction(fil, data_info):
         print(outs.shape)
 
         feat_file   = folder + '/' + model_info + '_'+ out_token +'.ft'
-        np.savetxt( feat_file, outs,
-                    header   = file_list )
+        np.savetxt( feat_file, outs)
         
         
 ################################################################################
@@ -354,8 +360,9 @@ def knnAtomic(train_ft, test_ft, labels, thr, test_file, out_dir):
     anomalies       = []
     frames_tup      = []
     frames          = []
-    pos     = 0
-    
+    pos             = 0
+    anom_pos        = []
+
     #distances = []
     for te in test_ft:
         flag    = 1 
@@ -370,10 +377,12 @@ def knnAtomic(train_ft, test_ft, labels, thr, test_file, out_dir):
 
         if flag:        
             anomalies.append(labels[pos].replace('/rensso/qnap', 'y:'))
+            anom_pos.append(pos)
         pos += 1
 
 
 
+    labels_lst = []
 
     for i in range(len(anomalies)):
     
@@ -381,11 +390,13 @@ def knnAtomic(train_ft, test_ft, labels, thr, test_file, out_dir):
         x   = x.readline()
         frm = int(x.split(',')[0])
         
-        frames_tup.append((frm, anomalies[i]))
+        frames_tup.append((anom_pos[i], anomalies[i]))
+        labels_lst.append(anomalies[i])
         frames.append(frm)
         
     base_name =  os.path.basename(test_file).split('.')[0]
-    u_saveArrayTuple2File(out_dir + '/' + base_name +'_th_'+ str(int(thr*100)) + '.txt', frames_tup)
+    #u_saveArrayTuple2File(out_dir + '/' + base_name +'_th_'+ str(int(thr*100)) + '.txt', frames_tup)
+    u_saveArray2File(out_dir + '/' + base_name +'_th_'+ str(int(thr*100)) + '.lst', labels_lst)
 
     return frames_tup
 
@@ -416,8 +427,13 @@ fin end of the vector
 '''
 def fillVector(info, fin):
     vector  = np.zeros(fin)
-    for item in info:
-        vector[int(item[0]):int(item[1])] = item[2]
+    if len (info) > 0:
+        if len(info[0]) == 3:
+            for item in info:
+                vector[int(item[0]):int(item[1])] = item[2]
+        else:
+            for item in info:
+                vector[int(item[0]):int(item[1])] = 1
 
     return vector
 
@@ -425,6 +441,8 @@ def fillVector(info, fin):
 ################################################################################
 def makeGtVector(file, fin):
     gt_mat  = np.loadtxt(file)
+    if len(gt_mat.shape) == 1:
+        gt_mat = gt_mat.reshape(1,2)
     gt      = fillVector(gt_mat, fin)
     return gt, gt_mat
 
@@ -432,7 +450,7 @@ def makeGtVector(file, fin):
 ################################################################################
 def makeAnomalyVector(anomalies, fin):
     anomaly_mat = []
-    for frame, file in anomalies:
+    for id, file in anomalies:
         buf         = open(file)
         frame_ini   = int(buf.readline().split(',')[0])
         for line in buf:
@@ -468,7 +486,7 @@ def validationInVector(anomalies, gt, ini=0):
     fpr = fp / (fp + tn + 1e-10)
     pre = tp / (tp + fp + 1e-10)
 
-    return fpr, tpr, pre
+    return [fpr, tpr, pre, tp, tn, fp, fn]
 
 ################################################################################
 ################################################################################
@@ -500,31 +518,134 @@ def validatation(file, data):
     test_ft     = np.loadtxt(test)
     labels      = u_fileList2array(labels)
 
-    fpr, tpr, pre   = [], [] , []
+    metrics     = []
 
     for th in np.arange(ini, fin, step):
         anomalies           = []
-        miss                = []
         ans                 = knnAtomic(train_ft, test_ft, labels, th, test, out_dir)
         
         a_vec, a_mat        = makeAnomalyVector(ans, final_frame)
 
-        fpr_s, tpr_s, pre_s = validationInVector(a_vec, gt, ini_frame)
-        fpr.append(fpr_s)
-        tpr.append(tpr_s)
-        pre.append(pre_s)
+        single_met          = validationInVector(a_vec, gt, ini_frame)
+        metrics.append(single_met)
  
-    fpr = [1] + fpr + [0]
-    tpr = [1] + tpr + [0]
-    pre = [1] + pre + [0]
-
-  
+    metrics = [[1, 1, 0, 0 ,0 ,0 ,0]] + metrics + [[0, 0, 1, 0 ,0 ,0 ,0]]
+    
+      
     #plotRocCurve([(fpr, tpr)], ['Net'])
-    out = np.array([fpr, tpr, pre])
-    out = np.transpose(out)
-    u_saveArrayTuple2File(out_dir + '/metrics.txt', out)
+    #out = np.array([fpr, tpr, pre])
+    #out = np.transpose(out)
+    u_saveArrayTuple2File(out_dir + '/metrics.txt', metrics)
+
+################################################################################
+################################################################################
+def makeVideoSummary(labels):
+    l_size  = len(labels)
+    
+    name_a  = os.path.basename(labels[0]).split('_')[1]
+    pos     = 0
+
+    summ    = np.zeros(l_size)
+    
+    for i in range(1, l_size):
+        name = os.path.basename(labels[i]).split('_')[1]
+        if name != name_a:
+            name_a  = name
+            pos    += 1
+
+        summ[i] = pos
+
+    return summ , pos + 1
 
 
+#===============================================================================
+def validation2(file, data):
+    out_dir     = data['directory']   
+
+    train       = data["train_feat_list"]
+    test        = data["test_feat_list"]
+    labels      = data['label_list']
+
+    ini         = data["ini_th"]
+    fin         = data['fin_th']
+    step        = data['step']
+
+    type        = data['type']
+    
+    if "out_dir" in data:
+        out_dir     = data['out_dir']
+    else:
+        out_dir     = out_dir + '/outputs'
+
+    u_mkdir(out_dir)
+
+    train_ft    = np.loadtxt(train)
+    test_ft     = np.loadtxt(test)
+    labels      = u_fileList2array(labels)
+
+    summ, tam   = makeVideoSummary(labels)
+
+    
+
+    metrics     = []
+    
+    for th in np.arange(ini, fin, step):
+        ans         = knnAtomic(train_ft, test_ft, labels, th, test, out_dir)
+        vids        = np.zeros(tam)
+        
+        for id, fl in ans:
+            vids[int(summ[id])] = 1
+    
+        tp, fp      = 0, 0
+        tn, fn      = 0, 0
+
+        ## type 0 for normal type 1 for anomalies
+        if type == 0:
+            fp = sum(vids)
+            tn = tam - fp 
+
+        else:
+            tp = sum(vids)
+            fn = tam - tp
+
+        metrics.append([-1, -1, -1, tp, tn, fp, fn])
+    
+    print('')
+    u_saveArrayTuple2File(out_dir + '/metrics_'+ str(type) +'.txt', metrics)
+
+################################################################################
+################################################################################
+def joinMetrics(file, data):
+    files   = data['files']
+    out_dir = data['out_dir']
+
+    metrics = []
+
+    for file in files:
+        metrics.append( np.loadtxt( file ) )
+    
+    metric_mat =  []
+    
+    #fpr, tpr, pre, tp, tn, fp, fn 
+    for i in range(metrics[0].shape[0]):
+        tp, fp      = 0, 0
+        tn, fn      = 0, 0
+
+        for mat in metrics:    
+            tp += mat[i][3]
+            tn += mat[i][4]
+            fp += mat[i][5]
+            fn += mat[i][6]
+                
+        tpr = tp / (tp + fn + 1e-10)
+        fpr = fp / (fp + tn + 1e-10)
+        pre = tp / (tp + fp + 1e-10)
+
+        metric_mat.append( [fpr, tpr, pre, tp, tn, fp, fn] )
+        
+    name = out_dir + '/metrics.txt'
+    u_saveArrayTuple2File(name, metric_mat)
+    
 ################################################################################
 ################################################################################
 def plotRoc(file, data):
@@ -564,11 +685,30 @@ def joinFeatures(file, data):
         print('Saving join matrix in: ', name)
         np.savetxt(name, join_mat)
 
+################################################################################
+################################################################################
+def findInList(labelsf, hlightf, labels, lb_pos):
+    lbls    = u_fileList2array(labelsf)
+    pos     = []
+
+    for hgf in hlightf:
+        high    = u_fileList2array(hgf)
+
+        for hg in high:
+
+            try:
+                index_element = lbls.index(hg)
+                labels[index_element] = lb_pos
+            except ValueError:
+                continue
+
+        lb_pos += 1
 
 ################################################################################
 ################################################################################
 def tsne(file, data):
     samples_files   = data['samples_files']
+    high_flag       = data['high_flag']
 
     #...........................................................................
     samples = []
@@ -582,6 +722,13 @@ def tsne(file, data):
         cont  += 1
     
     samples = np.concatenate(samples)
+
+    #............................................................................
+    if high_flag:
+        labelsf         = data['labels']
+        highlightf      = data['highlight']
+        findInList(labelsf, highlightf, labels, cont)       
+
 
     tsneExample(samples, labels.astype(int))
 

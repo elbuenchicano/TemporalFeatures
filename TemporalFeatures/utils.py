@@ -4,6 +4,7 @@ import os
 import argparse
 import json
 
+
 ################################################################################
 ################################################################################
 def u_fileList2array(file_name):
@@ -160,3 +161,13 @@ def u_stringSplitByNumbers(x):
     r = re.compile('(\d+)')
     l = r.split(x)
     return [int(y) if y.isdigit() else y for y in l]
+
+################################################################################
+################################################################################
+def u_listDirs(directory, token):
+    lst = []
+    for directory, dirs, files in os.walk(directory): 
+        if directory.find(token) >= 0:
+            lst.append(directory)
+    return lst
+

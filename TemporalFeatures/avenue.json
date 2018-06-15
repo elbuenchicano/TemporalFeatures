@@ -3,7 +3,7 @@
 	"run_flag"			: 0,
 	
     "general"			: {
-		"directory"		: "y:/Anomalies/train/test2/temporal",
+		"directory"		: "y:/Anomalies/avenue/temporal/21",
 		"frame_w"		: 320,
 		"frame_h"		: 240
 	},
@@ -35,7 +35,7 @@
 			"prob_th"		: 0.01,
 			"bandwidth"		: 0.3
 				},			
-		"methods"	: ["GMM", "KMeans", "Affinity", "KDE"],
+		"methods"	: ["GMM", "KMeans", "Affinity", "Spectral", "DBScan", "SOM", "Birch", "KDE"],
 		"models"	: ["Auto_Recu_15"],
 		"labels"    : "y:/Anomalies/umn/seq2/filelist_trk.lst",
 		"token"		: "test"
@@ -61,26 +61,25 @@
 	},
 	
 	"validation": {
-		"gt_file"	: "y:/Anomalies/train/gt/train.gt",
-		"range_frm" : 50,
-		"ini_th"	: 0,
-		"fin_th"	: 1,
+		"gt_file"	: "y:/Anomalies/avenue/test/gt/21_label.gt",
+		"range_frm" : 100,
+		"ini_th"	: 0, 
+		"fin_th"	: 2,
 		"step"		: 0.01,
-		"initial_frame"		: 840,
-		"final_frame"		: 18000,
-		"train_feat_list" 	: "y:/Anomalies/train/test2/temporal/features/Auto_Recu_15_train.ft",
-		"test_feat_list" 	: "y:/Anomalies/train/test2/temporal/features/Auto_Recu_15_test.ft",
-		"label_list"		: "y:/Anomalies/train/test2/test_trk.lst"
+		"initial_frame"		: 0,
+		"final_frame"		: 76,
+		"train_feat_list" 	: "y:/Anomalies/avenue/temporal/features/Auto_Recu_15_train.ft",
+		"test_feat_list" 	: "y:/Anomalies/avenue/temporal/features/Auto_Recu_15_21_test.ft",
+		"label_list"		: "y:/Anomalies/avenue/trks/test/filelist_trk_21.lst"
 	},
 	
 	"plot_roc":{
 		
 		"files"		: 	[	
-							"y:/Anomalies/train/test2/temporal/outputs/metrics.txt",
-							"y:/Anomalies/train/gt/method1.roc"
+							"y:/Anomalies/avenue/temporal/21/outputs/metrics.txt"
 				
 						],
-		"labels"	: 	[	"TAoT", "Bayes", "HOFM", "Original" ]
+		"labels"	: 	[	"TAoT", "HOFME", "HOFM", "Original" ]
 						
 	},
 	"joinFeats":{
@@ -95,7 +94,7 @@
 	},
 	
 	"tsne": {
-		"samples_files"	: [ "y:/Anomalies/train/test2/temporal/features/Auto_Recu_15_train.ft",
+		"samples_files"	: [ "y:/Anomalies/3/temporal/features/Auto_Recu_15_train.ft",
 							"y:/Anomalies/train/test2/temporal/features/Auto_Recu_15_test.ft"]
 	}
 	

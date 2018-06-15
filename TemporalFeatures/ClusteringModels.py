@@ -324,7 +324,7 @@ class KDEC:
                
         # until max iter or convergence condition is satisfied .....................
         while iter < self.max_iter_ and c_flag != True:
-            
+            #print('iteration', iter)           
             i   = iter / self.max_iter_
             th  = cgrow(i, self.prob_th_)
 
@@ -336,7 +336,7 @@ class KDEC:
             clusters_temp   = []
 
             for i in range(n_clusters):
-                #u_progress(i, n_clusters)
+                u_progress(i, n_clusters, iter)
                 if group_flag[i] == 0:
                     group_flag[i]    = 1
                     for j in range(n_clusters):
@@ -353,7 +353,8 @@ class KDEC:
                         clusters[i].kde_.fit(clusters[i].points_)
 
                     clusters_temp.append(clusters[i])
-                
+            
+            print('')
             clusters = clusters_temp
             iter    += 1
 
@@ -376,6 +377,9 @@ def clusteringKde(feats, labels, args, directory):
     #...........................................................................
     kdec = KDEC(max_iter, prob_th, bw)
     samples = feats[:, np.newaxis]
+    
+    #samples =  samples[:400,:,:]
+
     kdec.fit(samples)
     
     clusters    = [[] for i in range(len(kdec.clusters_))]
